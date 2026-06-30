@@ -34,7 +34,7 @@ function ExecutionsContent() {
       {/* Header */}
       <div className="flex items-center justify-between px-8 py-4 sticky top-0 z-10" style={{
         background: "rgba(10,10,15,0.92)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.15)",
+        borderBottom: "1px solid #1d1a2d",
       }}>
         <div>
           <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Execuções</h1>
@@ -100,7 +100,7 @@ export default function ExecutionsPage() {
       <div className="min-h-full">
         <div className="flex items-center justify-between px-8 py-4 sticky top-0 z-10" style={{
           background: "rgba(10,10,15,0.92)", backdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,255,255,0.15)",
+          borderBottom: "1px solid #1d1a2d",
         }}>
           <div>
             <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Execuções</h1>
@@ -133,7 +133,7 @@ function ExecRow({ exec, stuck = false }: { exec: N8nExecution; stuck?: boolean 
   return (
     <div className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all" style={{
       background: stuck ? "rgba(245,158,11,0.07)" : "#141420",
-      border: stuck ? "1px solid rgba(245,158,11,0.3)" : "1px solid rgba(255,255,255,0.15)",
+      border: stuck ? "1px solid rgba(245,158,11,0.3)" : "1px solid #252235",
     }}
       onMouseEnter={(e) => { if (!stuck) (e.currentTarget as HTMLElement).style.background = "#1a1a26" }}
       onMouseLeave={(e) => { if (!stuck) (e.currentTarget as HTMLElement).style.background = "#141420" }}

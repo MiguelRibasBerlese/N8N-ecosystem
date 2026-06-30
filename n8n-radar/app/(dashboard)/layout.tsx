@@ -58,11 +58,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       {/* ── Sidebar ── */}
       <aside className="flex flex-col w-64 shrink-0" style={{
         background: "#0d0d14",
-        borderRight: "1px solid rgba(255,255,255,0.15)",
+        borderRight: "1px solid #1d1a2d",
       }}>
 
         {/* Brand */}
-        <div className="px-5 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}>
+        <div className="px-5 pt-6 pb-5" style={{ borderBottom: "1px solid #1d1a2d" }}>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{
               background: "linear-gradient(135deg, #8547e4, #b07af6)",
@@ -82,7 +82,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         {/* Live strip */}
         <div className="mx-3 mt-3 px-3 py-2.5 rounded-xl flex items-center justify-between" style={{
           background: "rgba(255,255,255,0.03)",
-          border: "1px solid rgba(255,255,255,0.14)",
+          border: "1px solid #252235",
         }}>
           <div className="flex items-center gap-2 text-xs font-medium" style={{
             color: connected ? "#22c55e" : "#52525b",
@@ -141,7 +141,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </nav>
 
         {/* Footer */}
-        <div className="px-4 py-4 flex flex-col gap-1.5" style={{ borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+        <div className="px-4 py-4 flex flex-col gap-1.5" style={{ borderTop: "1px solid #1d1a2d" }}>
           <N8nStatus />
           <p className="text-xs" style={{ color: "#3f3f46" }}>FlowSentinel · {summary?.total ?? 0} workflows</p>
         </div>

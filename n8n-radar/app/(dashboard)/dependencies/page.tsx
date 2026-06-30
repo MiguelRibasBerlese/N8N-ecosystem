@@ -29,7 +29,7 @@ export default function DependenciesPage() {
       {/* Header */}
       <div className="flex items-center justify-between px-8 py-4 sticky top-0 z-10" style={{
         background: "rgba(10,10,15,0.92)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.15)",
+        borderBottom: "1px solid #1d1a2d",
       }}>
         <div>
           <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Mapa de Dependências</h1>
@@ -50,7 +50,7 @@ export default function DependenciesPage() {
 
           return (
             <div key={node.id} className="rounded-2xl overflow-hidden" style={{
-              background: "#0d0d14", border: "1px solid rgba(255,255,255,0.15)",
+              background: "#0d0d14", border: "1px solid #252235",
             }}>
               {/* Header do nó */}
               <div
@@ -85,15 +85,15 @@ export default function DependenciesPage() {
                       className="flex items-center gap-2 text-left px-3 py-2 rounded-xl transition-all"
                       style={{
                         background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.15)",
+                        border: "1px solid #252235",
                       }}
                       onMouseEnter={(e) => {
                         (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)"
-                        ;(e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.20)"
+                        ;(e.currentTarget as HTMLElement).style.borderColor = "#3a3558"
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"
-                        ;(e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.15)"
+                        ;(e.currentTarget as HTMLElement).style.borderColor = "#252235"
                       }}
                     >
                       <ArrowRight size={11} color="#52525b" className="shrink-0" />

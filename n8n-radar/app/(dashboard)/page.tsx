@@ -37,7 +37,7 @@ function KpiCard({ icon: Icon, label, value, sub, color, bgColor }: {
 }) {
   return (
     <div className="relative overflow-hidden rounded-2xl p-5 flex flex-col gap-4" style={{
-      background: "#0d0d14", border: "1px solid rgba(255,255,255,0.15)",
+      background: "#0d0d14", border: "1px solid #252235",
     }}>
       <div className="flex items-start justify-between">
         <div className="p-2.5 rounded-xl" style={{ background: bgColor }}>
@@ -86,7 +86,7 @@ export default function OverviewPage() {
       <div className="flex items-center justify-between px-8 py-4 sticky top-0 z-10" style={{
         background: "rgba(10,10,15,0.92)",
         backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.15)",
+        borderBottom: "1px solid #1d1a2d",
       }}>
         <div>
           <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Overview</h1>
@@ -99,7 +99,7 @@ export default function OverviewPage() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full" style={{
             background: connected ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)",
-            border: `1px solid ${connected ? "rgba(34,197,94,0.25)" : "rgba(255,255,255,0.15)"}`,
+            border: `1px solid ${connected ? "rgba(34,197,94,0.25)" : "#252235"}`,
             color: connected ? "#22c55e" : "#52525b",
           }}>
             <span className={`w-1.5 h-1.5 rounded-full ${connected ? "pulse" : ""}`}
@@ -108,7 +108,7 @@ export default function OverviewPage() {
           </div>
           <button onClick={refetch} title="Atualizar"
             className="w-8 h-8 flex items-center justify-center rounded-lg transition-all"
-            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.15)" }}>
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid #252235" }}>
             <RefreshCw size={13} color="#71717a" />
           </button>
         </div>
@@ -134,7 +134,7 @@ export default function OverviewPage() {
         {/* Gráficos */}
         <div className="grid gap-4" style={{ gridTemplateColumns: "2fr 3fr" }}>
           {/* Donut */}
-          <div className="rounded-2xl p-6" style={{ background: "#0d0d14", border: "1px solid rgba(255,255,255,0.15)" }}>
+          <div className="rounded-2xl p-6" style={{ background: "#0d0d14", border: "1px solid #252235" }}>
             <p className="text-sm font-semibold mb-0.5" style={{ color: "#a1a1aa" }}>Distribuição de Saúde</p>
             <p className="text-xs mb-5" style={{ color: "#52525b" }}>Proporção por nível de criticidade</p>
             {pieData.length > 0 ? (
@@ -155,7 +155,7 @@ export default function OverviewPage() {
           </div>
 
           {/* Bar */}
-          <div className="rounded-2xl p-6" style={{ background: "#0d0d14", border: "1px solid rgba(255,255,255,0.15)" }}>
+          <div className="rounded-2xl p-6" style={{ background: "#0d0d14", border: "1px solid #252235" }}>
             <div className="flex items-end justify-between mb-5">
               <div>
                 <p className="text-sm font-semibold" style={{ color: "#a1a1aa" }}>Workflows com Menor Score</p>
@@ -216,7 +216,7 @@ export default function OverviewPage() {
               className="text-sm outline-none transition-all"
               style={{
                 width: 200, background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.15)", borderRadius: 12,
+                border: "1px solid #252235", borderRadius: 12,
                 padding: "8px 12px", color: "#f4f4f5",
               }}
             />
