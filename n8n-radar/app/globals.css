@@ -3,71 +3,80 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #0a0a0f;
-  color: #f4f4f5;
+  background: #09090b;
+  color: #fafafa;
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Design tokens */
+/* ── Design Tokens ── */
 :root {
-  --bg:        #0a0a0f;
-  --surface:   #0d0d14;
-  --surface2:  #141420;
-  --border:    #252235;
-  --border2:   #1d1a2d;
-  --text1:     #f4f4f5;
+  --bg:        #09090b;
+  --surface:   #111114;
+  --surface2:  #18181c;
+  --surface3:  #222228;
+
+  /* Bordas sólidas — sempre visíveis */
+  --border:    #27272a;
+  --border2:   #1f1f23;
+  --border-hi: #3f3f46;
+
+  --text1:     #fafafa;
   --text2:     #a1a1aa;
   --text3:     #71717a;
   --text4:     #52525b;
 
+  --accent:    #8547e4;
+  --accent-lo: rgba(133,71,228,0.12);
+  --accent-md: rgba(133,71,228,0.25);
+
   --green:     #22c55e;
   --amber:     #f59e0b;
   --red:       #ef4444;
-  --blue:      #8547e4;
-  --violet:    #b07af6;
 }
 
-::-webkit-scrollbar { width: 4px; }
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 99px; }
 
-/* Utility classes que Tailwind v4 não gera automaticamente */
-.bg-surface   { background: var(--surface); }
-.bg-surface2  { background: var(--surface2); }
-.border-token { border-color: var(--border); }
-.border-token2{ border-color: var(--border2); }
-.text-2       { color: var(--text2); }
-.text-3       { color: var(--text3); }
-.text-4       { color: var(--text4); }
-
+/* ── Componentes base ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 0 transparent;
+  transition: border-color 150ms, box-shadow 150ms, background 150ms;
 }
 
+.card:hover,
 .card-hover:hover {
   background: var(--surface2);
-  border-color: rgba(255,255,255,0.12);
+  border-color: var(--border-hi);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
 }
 
-/* Animate pulse override */
+/* ── Pulse ── */
 @keyframes pulse2 {
   0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+  50%       { opacity: 0.35; }
 }
 .pulse { animation: pulse2 2s cubic-bezier(0.4,0,0.6,1) infinite; }
 
-/* Skeleton */
+/* ── Skeleton ── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 .skeleton {
-  background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+  background: linear-gradient(90deg,
+    var(--surface) 25%,
+    var(--surface2) 50%,
+    var(--surface) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 12px;
   border: 1px solid var(--border2);
-}
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
 }

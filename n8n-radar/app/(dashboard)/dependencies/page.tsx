@@ -1,10 +1,10 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { getDependencies, getCriticalImpact } from "@/lib/dependency-mapper"
+import { getCriticalImpact } from "@/lib/dependency-mapper"
 import { useWorkflows } from "@/hooks/use-workflows"
 import { HealthBadge } from "@/components/dashboard/health-badge"
-import { ArrowRight, RefreshCw, GitBranch } from "lucide-react"
+import { ArrowRight, RefreshCw, GitBranch, AlertTriangle } from "lucide-react"
 
 const CENTRAL_NODES = [
   { id: "uaNVMiZ1Krm0Nx5V", name: "Clint",   desc: "Microserviço CRM principal" },
@@ -18,6 +18,12 @@ const LEVEL_LABEL: Record<string, string> = {
 const LEVEL_COLOR: Record<string, string> = {
   critical: "#ef4444", warning: "#f59e0b", healthy: "#22c55e",
 }
+const LEVEL_BG: Record<string, string> = {
+  critical: "rgba(239,68,68,0.08)", warning: "rgba(245,158,11,0.06)", healthy: "rgba(34,197,94,0.04)",
+}
+const LEVEL_BORDER: Record<string, string> = {
+  critical: "rgba(239,68,68,0.2)", warning: "rgba(245,158,11,0.2)", healthy: "#27272a",
+}
 
 export default function DependenciesPage() {
   const router = useRouter()
@@ -26,78 +32,109 @@ export default function DependenciesPage() {
 
   return (
     <div className="min-h-full">
+
       {/* Header */}
-      <div className="flex items-center justify-between px-8 py-4 sticky top-0 z-10" style={{
-        background: "rgba(10,10,15,0.92)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid #1d1a2d",
-      }}>
+      <div className="flex items-center justify-between px-7 py-4 sticky top-0 z-10"
+        style={{
+          background: "rgba(9,9,11,0.88)",
+          backdropFilter: "blur(16px)",
+          borderBottom: "1px solid #1f1f23",
+        }}>
         <div>
-          <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Mapa de Dependências</h1>
-          <p className="text-xs mt-0.5" style={{ color: "#52525b" }}>
+          <h1 className="text-sm font-semibold" style={{ color: "#fafafa" }}>Mapa de Dependências</h1>
+          <p className="text-[11px] mt-0.5" style={{ color: "#52525b" }}>
             Grafo estático — extraído da instância em junho/2026
           </p>
         </div>
-        <div className="flex items-center gap-1.5 text-xs" style={{ color: "#52525b" }}>
-          <GitBranch size={12} /> {CENTRAL_NODES.length} nós centrais
+        <div className="flex items-center gap-1.5 text-xs font-medium"
+          style={{ color: "#52525b" }}>
+          <GitBranch size={11} /> {CENTRAL_NODES.length} nós centrais
         </div>
       </div>
 
-      <div className="px-8 py-6 max-w-5xl space-y-4">
+      <div className="px-7 py-6 space-y-4" style={{ maxWidth: 1100 }}>
+
         {CENTRAL_NODES.map((node) => {
           const health = healthMap[node.id]
           const { directDependents } = getCriticalImpact(node.id)
           const lvl = health?.level ?? "healthy"
 
           return (
-            <div key={node.id} className="rounded-2xl overflow-hidden" style={{
-              background: "#0d0d14", border: "1px solid #252235",
-            }}>
-              {/* Header do nó */}
+            <div key={node.id} className="rounded-2xl overflow-hidden"
+              style={{
+                background: "#111114",
+                border: `1px solid ${LEVEL_BORDER[lvl]}`,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+              }}>
+
+              {/* Node header */}
               <div
                 className="flex items-center justify-between px-5 py-4 cursor-pointer transition-all"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.15)" }}
+                style={{ borderBottom: "1px solid #1f1f23" }}
                 onClick={() => router.push(`/executions?workflowId=${node.id}`)}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)" }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "#18181c"
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.background = "transparent"
+                }}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3.5">
                   {health && <HealthBadge score={health.score} level={health.level} size="md" />}
                   <div>
-                    <p className="font-semibold" style={{ color: "#f4f4f5" }}>{node.name}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "#71717a" }}>{node.desc}</p>
+                    <p className="text-sm font-bold" style={{ color: "#fafafa" }}>{node.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "#52525b" }}>{node.desc}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs" style={{ color: "#71717a" }}>{directDependents.length} dependentes</p>
-                  <p className="text-xs font-semibold mt-0.5" style={{ color: LEVEL_COLOR[lvl] }}>
-                    {LEVEL_LABEL[lvl]}
-                  </p>
+                <div className="flex items-center gap-4 text-right">
+                  <div>
+                    <p className="text-xs" style={{ color: "#52525b" }}>{directDependents.length} dependentes</p>
+                    <p className="text-xs font-bold mt-0.5" style={{ color: LEVEL_COLOR[lvl] }}>
+                      {LEVEL_LABEL[lvl]}
+                    </p>
+                  </div>
+                  {lvl !== "healthy" && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                      style={{
+                        background: LEVEL_BG[lvl],
+                        border: `1px solid ${LEVEL_BORDER[lvl]}`,
+                        color: LEVEL_COLOR[lvl],
+                      }}>
+                      <AlertTriangle size={10} />
+                      Cascata
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Dependentes */}
+              {/* Dependents */}
               <div className="p-4">
-                <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))" }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "#3f3f46" }}>
+                  Workflows dependentes
+                </p>
+                <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))" }}>
                   {directDependents.map((d) => (
                     <button
                       key={d.sourceId}
                       onClick={() => router.push(`/executions?workflowId=${d.sourceId}`)}
-                      className="flex items-center gap-2 text-left px-3 py-2 rounded-xl transition-all"
+                      className="flex items-center gap-2 text-left px-3 py-2.5 rounded-xl transition-all"
                       style={{
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid #252235",
+                        background: "#18181c",
+                        border: "1px solid #27272a",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)"
-                        ;(e.currentTarget as HTMLElement).style.borderColor = "#3a3558"
+                        (e.currentTarget as HTMLElement).style.background = "#222228"
+                        ;(e.currentTarget as HTMLElement).style.borderColor = "#3f3f46"
                       }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)"
-                        ;(e.currentTarget as HTMLElement).style.borderColor = "#252235"
+                        (e.currentTarget as HTMLElement).style.background = "#18181c"
+                        ;(e.currentTarget as HTMLElement).style.borderColor = "#27272a"
                       }}
                     >
-                      <ArrowRight size={11} color="#52525b" className="shrink-0" />
-                      <span className="text-xs truncate" style={{ color: "#a1a1aa" }}>{d.sourceName}</span>
+                      <ArrowRight size={10} color="#3f3f46" className="shrink-0" />
+                      <span className="text-xs truncate font-medium" style={{ color: "#a1a1aa" }}>
+                        {d.sourceName}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -107,31 +144,45 @@ export default function DependenciesPage() {
         })}
 
         {/* Loop recursivo */}
-        <div className="rounded-2xl p-5" style={{
-          background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.25)",
-        }}>
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-xl shrink-0 mt-0.5" style={{ background: "rgba(245,158,11,0.15)" }}>
-              <RefreshCw size={14} color="#fbbf24" />
+        <div className="rounded-2xl p-5"
+          style={{
+            background: "rgba(245,158,11,0.06)",
+            border: "1px solid rgba(245,158,11,0.2)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+          }}>
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 rounded-xl shrink-0 mt-0.5"
+              style={{ background: "rgba(245,158,11,0.12)" }}>
+              <RefreshCw size={14} color="#f59e0b" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <p className="font-semibold" style={{ color: "#f4f4f5" }}>[Sendflow] Member</p>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold" style={{ color: "#fafafa" }}>[Sendflow] Member</p>
+                  <p className="text-xs mt-0.5" style={{ color: "#f59e0b" }}>Loop recursivo detectado</p>
+                </div>
                 <button
                   onClick={() => router.push("/executions?workflowId=nKRnoyp65q8tN1B_xEdof&status=running")}
-                  className="text-xs px-3 py-1.5 rounded-lg transition-all"
-                  style={{ color: "#fbbf24", border: "1px solid rgba(245,158,11,0.3)", background: "rgba(245,158,11,0.08)" }}
+                  className="text-xs px-3 py-1.5 rounded-xl transition-all shrink-0"
+                  style={{
+                    color: "#f59e0b",
+                    border: "1px solid rgba(245,158,11,0.25)",
+                    background: "rgba(245,158,11,0.08)",
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.5)" }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.25)" }}
                 >
                   Monitorar execuções
                 </button>
               </div>
-              <p className="text-xs mt-1.5 leading-relaxed" style={{ color: "#a1a1aa" }}>
+              <p className="text-xs mt-3 leading-relaxed" style={{ color: "#71717a" }}>
                 Chama a si mesmo via HTTP — risco de loop infinito.
                 Alerta disparado automaticamente quando &gt;3 execuções simultâneas.
               </p>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )
