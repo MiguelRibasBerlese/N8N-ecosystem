@@ -18,17 +18,17 @@ export function WorkflowCard({ health }: { health: WorkflowHealth }) {
       className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group"
       style={{
         background: "#0d0d14",
-        border: "1px solid rgba(255,255,255,0.07)",
+        border: "1px solid rgba(255,255,255,0.15)",
         borderLeft: `3px solid ${leftColor}`,
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.background = "#141420"
-        ;(e.currentTarget as HTMLElement).style.borderColor = `rgba(255,255,255,0.12)`
+        ;(e.currentTarget as HTMLElement).style.borderColor = `rgba(255,255,255,0.20)`
         ;(e.currentTarget as HTMLElement).style.borderLeftColor = leftColor
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.background = "#0d0d14"
-        ;(e.currentTarget as HTMLElement).style.borderColor = `rgba(255,255,255,0.07)`
+        ;(e.currentTarget as HTMLElement).style.borderColor = `rgba(255,255,255,0.15)`
         ;(e.currentTarget as HTMLElement).style.borderLeftColor = leftColor
       }}
     >

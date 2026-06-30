@@ -25,7 +25,7 @@ export default function AlertsPage() {
       {/* Header */}
       <div className="sticky top-0 z-10 px-8 py-4" style={{
         background: "rgba(10,10,15,0.92)", backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        borderBottom: "1px solid rgba(255,255,255,0.15)",
       }}>
         <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Alertas</h1>
         <p className="text-xs mt-0.5" style={{ color: "#52525b" }}>
@@ -42,7 +42,7 @@ export default function AlertsPage() {
             { label: "Total",      value: alerts.length,   color: "#a1a1aa", bg: "rgba(255,255,255,0.06)", Icon: Database },
           ].map(({ label, value, color, bg, Icon }) => (
             <div key={label} className="flex items-center gap-3 rounded-2xl px-5 py-4" style={{
-              background: "#0d0d14", border: "1px solid rgba(255,255,255,0.08)",
+              background: "#0d0d14", border: "1px solid rgba(255,255,255,0.15)",
             }}>
               <div className="p-2.5 rounded-xl" style={{ background: bg }}>
                 <Icon size={15} color={color} />
@@ -57,7 +57,7 @@ export default function AlertsPage() {
 
         {!hasSupabase && (
           <div className="flex items-center gap-3 rounded-xl px-4 py-3 text-xs" style={{
-            background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)",
+            background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.15)",
             color: "#71717a",
           }}>
             <Database size={13} color="#52525b" className="shrink-0" />
