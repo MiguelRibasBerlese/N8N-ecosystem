@@ -99,7 +99,7 @@ export default function OverviewPage() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full" style={{
             background: connected ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)",
-            border: `1px solid ${connected ? "rgba(34,197,94,0.25)" : "rgba(255,255,255,0.08)"}`,
+            border: `1px solid ${connected ? "rgba(34,197,94,0.25)" : "rgba(255,255,255,0.15)"}`,
             color: connected ? "#22c55e" : "#52525b",
           }}>
             <span className={`w-1.5 h-1.5 rounded-full ${connected ? "pulse" : ""}`}
