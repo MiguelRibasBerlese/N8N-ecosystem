@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useExecutions } from "@/hooks/use-executions"
 import type { N8nExecution } from "@/lib/types"
@@ -15,7 +16,7 @@ const STATUS_CFG = {
   canceled: { icon: Ban,          color: "#71717a", bg: "rgba(255,255,255,0.06)", label: "Cancelado" },
 }
 
-export default function ExecutionsPage() {
+function ExecutionsContent() {
   const params = useSearchParams()
   const workflowId = params.get("workflowId") ?? undefined
   const status = params.get("status") ?? undefined
@@ -90,6 +91,30 @@ export default function ExecutionsPage() {
         </section>
       </div>
     </div>
+  )
+}
+
+export default function ExecutionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-full">
+        <div className="flex items-center justify-between px-8 py-4 sticky top-0 z-10" style={{
+          background: "rgba(10,10,15,0.92)", backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+        }}>
+          <div>
+            <h1 className="text-base font-semibold" style={{ color: "#f4f4f5" }}>Execuções</h1>
+          </div>
+        </div>
+        <div className="px-8 py-6 space-y-2">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="skeleton" style={{ height: 56, borderRadius: 12 }} />
+          ))}
+        </div>
+      </div>
+    }>
+      <ExecutionsContent />
+    </Suspense>
   )
 }
 
