@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0a0f;
+  color: #f4f4f5;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Design tokens */
+:root {
+  --bg:        #0a0a0f;
+  --surface:   #0d0d14;
+  --surface2:  #141420;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.04);
+  --text1:     #f4f4f5;
+  --text2:     #a1a1aa;
+  --text3:     #71717a;
+  --text4:     #52525b;
+
+  --green:     #22c55e;
+  --amber:     #f59e0b;
+  --red:       #ef4444;
+  --blue:      #8547e4;
+  --violet:    #b07af6;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+
+/* Utility classes que Tailwind v4 não gera automaticamente */
+.bg-surface   { background: var(--surface); }
+.bg-surface2  { background: var(--surface2); }
+.border-token { border-color: var(--border); }
+.border-token2{ border-color: var(--border2); }
+.text-2       { color: var(--text2); }
+.text-3       { color: var(--text3); }
+.text-4       { color: var(--text4); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.card-hover:hover {
+  background: var(--surface2);
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* Animate pulse override */
+@keyframes pulse2 {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.pulse { animation: pulse2 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+  border: 1px solid var(--border2);
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

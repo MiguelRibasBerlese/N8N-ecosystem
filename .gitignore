@@ -1,0 +1,20 @@
+# Node
+node_modules/
+.npm
+
+# Next.js
+n8n-radar/.next/
+n8n-radar/out/
+
+# Env files (NUNCA commitar secrets)
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+nul
+*.log
