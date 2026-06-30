@@ -5,7 +5,8 @@ import type { WorkflowHealth } from "@/lib/types"
 import { HealthBadge } from "./health-badge"
 import { ChevronRight, Cpu } from "lucide-react"
 
-const LEVEL_STRIPE: Record<string, string> = {
+/* stripe color by level */
+const STRIPE: Record<string, string> = {
   critical: "#ef4444",
   warning:  "#f59e0b",
   healthy:  "transparent",
@@ -13,50 +14,57 @@ const LEVEL_STRIPE: Record<string, string> = {
 
 export function WorkflowCard({ health }: { health: WorkflowHealth }) {
   const router = useRouter()
-  const stripe = LEVEL_STRIPE[health.level]
+  const stripe = STRIPE[health.level]
   const hasStripe = health.level !== "healthy"
+
+  /* box-shadow approach:
+     layer 1: left accent stripe simulated via inset shadow
+     layer 2: ring border — always visible
+     layer 3: depth shadow
+  */
+  const shadowIdle = hasStripe
+    ? `inset 3px 0 0 0 ${stripe}, 0 0 0 1px #3d3d48, 0 1px 4px rgba(0,0,0,0.5)`
+    : `0 0 0 1px #3d3d48, 0 1px 4px rgba(0,0,0,0.5)`
+
+  const shadowHover = hasStripe
+    ? `inset 3px 0 0 0 ${stripe}, 0 0 0 1px #5a5a66, 0 6px 20px rgba(0,0,0,0.7)`
+    : `0 0 0 1px #5a5a66, 0 6px 20px rgba(0,0,0,0.7)`
 
   return (
     <button
       onClick={() => router.push(`/executions?workflowId=${health.workflowId}`)}
-      className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl transition-all"
+      className="w-full text-left flex items-center gap-3 px-4 py-3 rounded-2xl"
       style={{
-        background: "#111114",
-        border: "1px solid #27272a",
-        borderLeft: hasStripe ? `3px solid ${stripe}` : "1px solid #27272a",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
-        transition: "background 150ms, border-color 150ms, box-shadow 150ms, transform 150ms",
+        background: "#0e0e16",
+        boxShadow: shadowIdle,
+        transition: "background 120ms, box-shadow 120ms, transform 120ms",
       }}
       onMouseEnter={(e) => {
         const el = e.currentTarget as HTMLElement
-        el.style.background = "#18181c"
-        el.style.borderColor = "#3f3f46"
-        el.style.boxShadow = "0 6px 20px rgba(0,0,0,0.6)"
+        el.style.background = "#14141e"
+        el.style.boxShadow = shadowHover
         el.style.transform = "translateY(-1px)"
-        if (hasStripe) el.style.borderLeftColor = stripe
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget as HTMLElement
-        el.style.background = "#111114"
-        el.style.borderColor = "#27272a"
-        el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.5)"
+        el.style.background = "#0e0e16"
+        el.style.boxShadow = shadowIdle
         el.style.transform = "translateY(0)"
-        if (hasStripe) el.style.borderLeftColor = stripe
       }}
     >
       <HealthBadge score={health.score} level={health.level} size="sm" />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <p className="text-sm font-semibold truncate" style={{ color: "#e4e4e7" }}>
+          <p className="text-sm font-semibold truncate" style={{ color: "#e8e8ec" }}>
             {health.workflowName}
           </p>
           {health.isDependencyNode && (
-            <Cpu size={10} color="#a678f0" className="shrink-0" />
+            <Cpu size={10} color="#a78bfa" className="shrink-0" />
           )}
         </div>
         {health.issues[0] && (
-          <p className="text-xs truncate mt-0.5" style={{ color: "#52525b" }}>
+          <p className="text-xs truncate mt-0.5" style={{ color: "#4b4b58" }}>
             {health.issues[0]}
           </p>
         )}
@@ -75,7 +83,7 @@ export function WorkflowCard({ health }: { health: WorkflowHealth }) {
         )}
       </div>
 
-      <ChevronRight size={13} color="#3f3f46" />
+      <ChevronRight size={13} color="#3a3a44" />
     </button>
   )
 }

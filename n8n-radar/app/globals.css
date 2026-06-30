@@ -3,58 +3,36 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #09090b;
-  color: #fafafa;
+  background: #05050a;
+  color: #f0f0f2;
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Design Tokens ── */
-:root {
-  --bg:        #09090b;
-  --surface:   #111114;
-  --surface2:  #18181c;
-  --surface3:  #222228;
-
-  /* Bordas sólidas — sempre visíveis */
-  --border:    #27272a;
-  --border2:   #1f1f23;
-  --border-hi: #3f3f46;
-
-  --text1:     #fafafa;
-  --text2:     #a1a1aa;
-  --text3:     #71717a;
-  --text4:     #52525b;
-
-  --accent:    #8547e4;
-  --accent-lo: rgba(133,71,228,0.12);
-  --accent-md: rgba(133,71,228,0.25);
-
-  --green:     #22c55e;
-  --amber:     #f59e0b;
-  --red:       #ef4444;
-}
-
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: #4b4b52; border-radius: 99px; }
 
-/* ── Componentes base ── */
+/* ── Ring border utility (box-shadow always renders, border may not on dark bg) ── */
+/*
+   Instead of border:1px solid X, use box-shadow: 0 0 0 1px X
+   This layer is painted after compositing and is always visible.
+   Combine with a depth shadow as a second value.
+*/
+
+/* ── Base card ── */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: #0e0e16;
   border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 0 transparent;
-  transition: border-color 150ms, box-shadow 150ms, background 150ms;
+  /* ring + depth — always visible, no border property */
+  box-shadow: 0 0 0 1px #3d3d48, 0 2px 8px rgba(0,0,0,0.6);
+  transition: box-shadow 150ms ease, background 150ms ease, transform 150ms ease;
 }
-
-.card:hover,
-.card-hover:hover {
-  background: var(--surface2);
-  border-color: var(--border-hi);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+.card:hover {
+  background: #14141e;
+  box-shadow: 0 0 0 1px #5a5a66, 0 6px 24px rgba(0,0,0,0.7);
 }
 
 /* ── Pulse ── */
@@ -70,13 +48,13 @@ body {
   100% { background-position: -200% 0; }
 }
 .skeleton {
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px #2a2a32;
   background: linear-gradient(90deg,
-    var(--surface) 25%,
-    var(--surface2) 50%,
-    var(--surface) 75%
+    #0e0e16 25%,
+    #16161f 50%,
+    #0e0e16 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 12px;
-  border: 1px solid var(--border2);
 }

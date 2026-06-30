@@ -6,23 +6,19 @@ import { useWorkflows } from "@/hooks/use-workflows"
 import { HealthBadge } from "@/components/dashboard/health-badge"
 import { ArrowRight, RefreshCw, GitBranch, AlertTriangle } from "lucide-react"
 
+const ring  = (c: string) => `0 0 0 1px ${c}`
+const ringD = (c: string) => `0 0 0 1px ${c}, 0 2px 8px rgba(0,0,0,0.55)`
+
 const CENTRAL_NODES = [
-  { id: "uaNVMiZ1Krm0Nx5V", name: "Clint",   desc: "Microserviço CRM principal" },
-  { id: "BHtGzCTT2vy5FZcv", name: "DataBase", desc: "Microserviço de dados" },
-  { id: "iqGTMtrWFjjZsJbp", name: "Avisos",   desc: "Sistema de notificação" },
+  { id: "uaNVMiZ1Krm0Nx5V", name: "Clint",    desc: "Microserviço CRM principal" },
+  { id: "BHtGzCTT2vy5FZcv", name: "DataBase", desc: "Microserviço de dados"      },
+  { id: "iqGTMtrWFjjZsJbp", name: "Avisos",   desc: "Sistema de notificação"     },
 ]
 
-const LEVEL_LABEL: Record<string, string> = {
-  critical: "Crítico", warning: "Atenção", healthy: "Saudável",
-}
-const LEVEL_COLOR: Record<string, string> = {
-  critical: "#ef4444", warning: "#f59e0b", healthy: "#22c55e",
-}
-const LEVEL_BG: Record<string, string> = {
-  critical: "rgba(239,68,68,0.08)", warning: "rgba(245,158,11,0.06)", healthy: "rgba(34,197,94,0.04)",
-}
-const LEVEL_BORDER: Record<string, string> = {
-  critical: "rgba(239,68,68,0.2)", warning: "rgba(245,158,11,0.2)", healthy: "#27272a",
+const LEVEL: Record<string, { label: string; color: string; ringColor: string; bg: string }> = {
+  critical: { label: "Crítico",  color: "#f87171", ringColor: "rgba(239,68,68,0.45)",   bg: "rgba(239,68,68,0.07)"  },
+  warning:  { label: "Atenção",  color: "#fbbf24", ringColor: "rgba(245,158,11,0.45)",  bg: "rgba(245,158,11,0.05)" },
+  healthy:  { label: "Saudável", color: "#4ade80", ringColor: "#3d3d48",                bg: "#0e0e16"               },
 }
 
 export default function DependenciesPage() {
@@ -36,18 +32,17 @@ export default function DependenciesPage() {
       {/* Header */}
       <div className="flex items-center justify-between px-7 py-4 sticky top-0 z-10"
         style={{
-          background: "rgba(9,9,11,0.88)",
+          background: "rgba(5,5,10,0.9)",
           backdropFilter: "blur(16px)",
-          borderBottom: "1px solid #1f1f23",
+          boxShadow: "0 1px 0 0 #2e2e38",
         }}>
         <div>
-          <h1 className="text-sm font-semibold" style={{ color: "#fafafa" }}>Mapa de Dependências</h1>
-          <p className="text-[11px] mt-0.5" style={{ color: "#52525b" }}>
+          <h1 className="text-sm font-semibold" style={{ color: "#f0f0f2" }}>Mapa de Dependências</h1>
+          <p className="text-[11px] mt-0.5" style={{ color: "#4b4b58" }}>
             Grafo estático — extraído da instância em junho/2026
           </p>
         </div>
-        <div className="flex items-center gap-1.5 text-xs font-medium"
-          style={{ color: "#52525b" }}>
+        <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: "#4b4b58" }}>
           <GitBranch size={11} /> {CENTRAL_NODES.length} nós centrais
         </div>
       </div>
@@ -57,59 +52,55 @@ export default function DependenciesPage() {
         {CENTRAL_NODES.map((node) => {
           const health = healthMap[node.id]
           const { directDependents } = getCriticalImpact(node.id)
-          const lvl = health?.level ?? "healthy"
+          const lvl = LEVEL[health?.level ?? "healthy"]
 
           return (
             <div key={node.id} className="rounded-2xl overflow-hidden"
               style={{
-                background: "#111114",
-                border: `1px solid ${LEVEL_BORDER[lvl]}`,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+                background: lvl.bg,
+                boxShadow: ringD(lvl.ringColor),
               }}>
 
-              {/* Node header */}
+              {/* Node row */}
               <div
-                className="flex items-center justify-between px-5 py-4 cursor-pointer transition-all"
-                style={{ borderBottom: "1px solid #1f1f23" }}
+                className="flex items-center justify-between px-5 py-4 cursor-pointer"
+                style={{
+                  boxShadow: "0 1px 0 0 #2a2a34",
+                  transition: "background 120ms",
+                }}
                 onClick={() => router.push(`/executions?workflowId=${node.id}`)}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "#18181c"
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "transparent"
-                }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)" }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent" }}
               >
                 <div className="flex items-center gap-3.5">
                   {health && <HealthBadge score={health.score} level={health.level} size="md" />}
                   <div>
-                    <p className="text-sm font-bold" style={{ color: "#fafafa" }}>{node.name}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "#52525b" }}>{node.desc}</p>
+                    <p className="text-sm font-bold" style={{ color: "#f0f0f2" }}>{node.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "#4b4b58" }}>{node.desc}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-right">
-                  <div>
-                    <p className="text-xs" style={{ color: "#52525b" }}>{directDependents.length} dependentes</p>
-                    <p className="text-xs font-bold mt-0.5" style={{ color: LEVEL_COLOR[lvl] }}>
-                      {LEVEL_LABEL[lvl]}
-                    </p>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-xs" style={{ color: "#4b4b58" }}>{directDependents.length} dependentes</p>
+                    <p className="text-xs font-bold mt-0.5" style={{ color: lvl.color }}>{lvl.label}</p>
                   </div>
-                  {lvl !== "healthy" && (
+                  {health?.level !== "healthy" && health && (
                     <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
                       style={{
-                        background: LEVEL_BG[lvl],
-                        border: `1px solid ${LEVEL_BORDER[lvl]}`,
-                        color: LEVEL_COLOR[lvl],
+                        color: lvl.color,
+                        boxShadow: ring(lvl.ringColor),
+                        background: lvl.bg,
                       }}>
-                      <AlertTriangle size={10} />
-                      Cascata
+                      <AlertTriangle size={10} /> Cascata
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Dependents */}
+              {/* Dependents grid */}
               <div className="p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "#3f3f46" }}>
+                <p className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: "#3a3a44" }}>
                   Workflows dependentes
                 </p>
                 <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))" }}>
@@ -117,21 +108,24 @@ export default function DependenciesPage() {
                     <button
                       key={d.sourceId}
                       onClick={() => router.push(`/executions?workflowId=${d.sourceId}`)}
-                      className="flex items-center gap-2 text-left px-3 py-2.5 rounded-xl transition-all"
+                      className="flex items-center gap-2 text-left px-3 py-2.5 rounded-xl"
                       style={{
-                        background: "#18181c",
-                        border: "1px solid #27272a",
+                        background: "#13131c",
+                        boxShadow: ring("#3d3d48"),
+                        transition: "background 120ms, box-shadow 120ms",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLElement).style.background = "#222228"
-                        ;(e.currentTarget as HTMLElement).style.borderColor = "#3f3f46"
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = "#1a1a26"
+                        el.style.boxShadow = ring("#5a5a66")
                       }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLElement).style.background = "#18181c"
-                        ;(e.currentTarget as HTMLElement).style.borderColor = "#27272a"
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = "#13131c"
+                        el.style.boxShadow = ring("#3d3d48")
                       }}
                     >
-                      <ArrowRight size={10} color="#3f3f46" className="shrink-0" />
+                      <ArrowRight size={10} color="#3a3a44" className="shrink-0" />
                       <span className="text-xs truncate font-medium" style={{ color: "#a1a1aa" }}>
                         {d.sourceName}
                       </span>
@@ -146,9 +140,8 @@ export default function DependenciesPage() {
         {/* Loop recursivo */}
         <div className="rounded-2xl p-5"
           style={{
-            background: "rgba(245,158,11,0.06)",
-            border: "1px solid rgba(245,158,11,0.2)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+            background: "rgba(245,158,11,0.05)",
+            boxShadow: ringD("rgba(245,158,11,0.4)"),
           }}>
           <div className="flex items-start gap-3.5">
             <div className="p-2.5 rounded-xl shrink-0 mt-0.5"
@@ -158,24 +151,25 @@ export default function DependenciesPage() {
             <div className="flex-1">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-bold" style={{ color: "#fafafa" }}>[Sendflow] Member</p>
+                  <p className="text-sm font-bold" style={{ color: "#f0f0f2" }}>[Sendflow] Member</p>
                   <p className="text-xs mt-0.5" style={{ color: "#f59e0b" }}>Loop recursivo detectado</p>
                 </div>
                 <button
                   onClick={() => router.push("/executions?workflowId=nKRnoyp65q8tN1B_xEdof&status=running")}
-                  className="text-xs px-3 py-1.5 rounded-xl transition-all shrink-0"
+                  className="text-xs px-3 py-1.5 rounded-xl shrink-0"
                   style={{
-                    color: "#f59e0b",
-                    border: "1px solid rgba(245,158,11,0.25)",
+                    color: "#fbbf24",
+                    boxShadow: ring("rgba(245,158,11,0.35)"),
                     background: "rgba(245,158,11,0.08)",
+                    transition: "box-shadow 120ms",
                   }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.5)" }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.25)" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = ring("rgba(245,158,11,0.65)") }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = ring("rgba(245,158,11,0.35)") }}
                 >
                   Monitorar execuções
                 </button>
               </div>
-              <p className="text-xs mt-3 leading-relaxed" style={{ color: "#71717a" }}>
+              <p className="text-xs mt-3 leading-relaxed" style={{ color: "#5a5a68" }}>
                 Chama a si mesmo via HTTP — risco de loop infinito.
                 Alerta disparado automaticamente quando &gt;3 execuções simultâneas.
               </p>

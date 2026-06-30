@@ -5,23 +5,25 @@ import { ptBR } from "date-fns/locale"
 
 const cfg = {
   critical: {
-    wrap:      { background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.2)" },
+    bg:        "rgba(239,68,68,0.08)",
+    ring:      "0 0 0 1px rgba(239,68,68,0.4)",
     bar:       "#ef4444",
-    iconWrap:  { background: "rgba(239,68,68,0.12)" },
+    iconBg:    "rgba(239,68,68,0.15)",
     iconColor: "#f87171",
     title:     "#fca5a5",
     message:   "#a1a1aa",
-    timeColor: "rgba(248,113,113,0.7)",
+    time:      "rgba(248,113,113,0.8)",
     Icon: ShieldAlert,
   },
   warning: {
-    wrap:      { background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)" },
+    bg:        "rgba(245,158,11,0.06)",
+    ring:      "0 0 0 1px rgba(245,158,11,0.4)",
     bar:       "#f59e0b",
-    iconWrap:  { background: "rgba(245,158,11,0.12)" },
+    iconBg:    "rgba(245,158,11,0.12)",
     iconColor: "#fbbf24",
     title:     "#fde68a",
     message:   "#a1a1aa",
-    timeColor: "rgba(251,191,36,0.7)",
+    time:      "rgba(251,191,36,0.8)",
     Icon: AlertTriangle,
   },
 }
@@ -32,21 +34,30 @@ export function AlertBanner({ alert }: { alert: Alert }) {
   const elapsed = formatDistanceToNow(new Date(alert.detectedAt), { addSuffix: true, locale: ptBR })
 
   return (
-    <div className="relative flex items-start gap-4 rounded-2xl px-5 py-4 overflow-hidden"
-      style={c.wrap}>
-      {/* Left bar accent */}
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-full"
-        style={{ background: c.bar }} />
+    <div
+      className="relative flex items-start gap-4 rounded-2xl px-5 py-4 overflow-hidden"
+      style={{
+        background: c.bg,
+        boxShadow: c.ring,
+      }}
+    >
+      {/* Left accent bar (inset shadow — always visible) */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-full"
+        style={{ background: c.bar }}
+      />
 
-      <div className="p-2 rounded-xl shrink-0 mt-0.5" style={c.iconWrap}>
+      <div className="p-2 rounded-xl shrink-0 mt-0.5" style={{ background: c.iconBg }}>
         <Icon size={14} color={c.iconColor} />
       </div>
+
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold" style={{ color: c.title }}>{alert.workflowName}</p>
         <p className="text-xs mt-1 leading-relaxed" style={{ color: c.message }}>{alert.message}</p>
       </div>
+
       <div className="flex items-center gap-1.5 text-[11px] font-medium whitespace-nowrap mt-0.5"
-        style={{ color: c.timeColor }}>
+        style={{ color: c.time }}>
         <Clock size={10} />
         {elapsed}
       </div>
