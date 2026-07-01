@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react"
 import type { Alert } from "@/lib/types"
 import { AlertBanner } from "@/components/dashboard/alert-banner"
-import { Bell, Database, CheckCircle2, ShieldCheck } from "lucide-react"
+import { Bell, Database, CheckCircle2, ShieldCheck, type LucideIcon } from "lucide-react"
 
 const ring  = (c: string) => `0 0 0 1px ${c}`
 const ringD = (c: string) => `0 0 0 1px ${c}, 0 2px 8px rgba(0,0,0,0.55)`
 
 function KpiPill({ label, value, color, tint, Icon }: {
-  label: string; value: number; color: string; tint: string; Icon: any
+  label: string; value: number; color: string; tint: string; Icon: LucideIcon
 }) {
   return (
     <div className="flex items-center gap-3 rounded-2xl px-5 py-4"
@@ -47,7 +47,7 @@ export default function AlertsPage() {
     <div className="min-h-full">
 
       {/* Header */}
-      <div className="sticky top-0 z-10 px-7 py-4"
+      <div className="sticky top-0 z-10 px-4 md:px-7 py-4"
         style={{
           background: "rgba(5,5,10,0.9)",
           backdropFilter: "blur(16px)",
@@ -55,14 +55,14 @@ export default function AlertsPage() {
         }}>
         <h1 className="text-sm font-semibold" style={{ color: "#f0f0f2" }}>Alertas</h1>
         <p className="text-[11px] mt-0.5" style={{ color: "#4b4b58" }}>
-          Histórico de eventos detectados pelo FlowSentinel
+          Histórico de eventos detectados pelo PulseGrid
         </p>
       </div>
 
-      <div className="px-7 py-6 space-y-7" style={{ maxWidth: 800 }}>
+      <div className="px-4 md:px-7 py-6 space-y-7" style={{ maxWidth: 800 }}>
 
         {/* KPIs */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <KpiPill label="Ativos"     value={active.length}   color="#f87171" tint="rgba(239,68,68,0.12)"  Icon={Bell}        />
           <KpiPill label="Resolvidos" value={resolved.length} color="#4ade80" tint="rgba(34,197,94,0.12)"  Icon={CheckCircle2} />
           <KpiPill label="Total"      value={alerts.length}   color="#a1a1aa" tint="rgba(255,255,255,0.05)" Icon={Database}    />

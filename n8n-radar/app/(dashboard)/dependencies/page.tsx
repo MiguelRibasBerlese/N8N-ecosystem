@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { getCriticalImpact } from "@/lib/dependency-mapper"
 import { useWorkflows } from "@/hooks/use-workflows"
 import { HealthBadge } from "@/components/dashboard/health-badge"
+import { DependencyTreemap } from "@/components/charts/dependency-treemap"
 import { ArrowRight, RefreshCw, GitBranch, AlertTriangle } from "lucide-react"
 
 const ring  = (c: string) => `0 0 0 1px ${c}`
@@ -30,7 +31,7 @@ export default function DependenciesPage() {
     <div className="min-h-full">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-7 py-4 sticky top-0 z-10"
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 md:px-7 py-4 sticky top-0 z-10"
         style={{
           background: "rgba(5,5,10,0.9)",
           backdropFilter: "blur(16px)",
@@ -47,7 +48,20 @@ export default function DependenciesPage() {
         </div>
       </div>
 
-      <div className="px-7 py-6 space-y-4" style={{ maxWidth: 1100 }}>
+      <div className="px-4 md:px-7 py-6 space-y-4" style={{ maxWidth: 1100 }}>
+
+        <div className="rounded-2xl p-5" style={{ background: "#0e0e16", boxShadow: ringD("#3d3d48") }}>
+          <p className="text-sm font-semibold" style={{ color: "#a1a1aa" }}>Impacto por Nó</p>
+          <p className="text-xs mt-0.5 mb-3" style={{ color: "#4b4b58" }}>Tamanho = nº de dependentes diretos</p>
+          <DependencyTreemap
+            nodes={CENTRAL_NODES.map((node) => ({
+              id: node.id,
+              name: node.name,
+              dependents: getCriticalImpact(node.id).directDependents.length,
+              level: healthMap[node.id]?.level ?? "healthy",
+            }))}
+          />
+        </div>
 
         {CENTRAL_NODES.map((node) => {
           const health = healthMap[node.id]
@@ -63,7 +77,7 @@ export default function DependenciesPage() {
 
               {/* Node row */}
               <div
-                className="flex items-center justify-between px-5 py-4 cursor-pointer"
+                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 cursor-pointer"
                 style={{
                   boxShadow: "0 1px 0 0 #2a2a34",
                   transition: "background 120ms",

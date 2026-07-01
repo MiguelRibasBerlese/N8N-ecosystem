@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FlowSentinel — Monitor n8n em Tempo Real",
+  title: "PulseGrid — Monitor n8n em Tempo Real",
   description: "Dashboard de monitoramento de workflows n8n com alertas automáticos, mapa de dependências e execuções em tempo real.",
+  icons: {
+    icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%2306b6d4'/%3E%3Cpath d='M5 20h4l2.5-8 4 15 3-11 2 4h6.5' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='27' cy='20' r='1.8' fill='white'/%3E%3C/svg%3E",
+  },
 };
 
 export default function RootLayout({
