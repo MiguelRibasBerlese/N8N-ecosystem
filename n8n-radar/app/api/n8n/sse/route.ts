@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic"
 import { n8nClient } from "@/lib/n8n-client"
 import { calculateHealthScore, buildHealthSummary, rankWorkflowsByRisk } from "@/lib/health-engine"
 import { runAllRules } from "@/lib/alert-rules"
-import { saveAlert } from "@/lib/alert-store"
+import { saveAlert, getAlertStatuses, alertStatusKey } from "@/lib/alert-store"
 
 async function fetchHealthData() {
   const [workflows, executions] = await Promise.all([
@@ -27,6 +27,12 @@ async function fetchHealthData() {
 
   const alerts = runAllRules({ healths, executions, allExecutions })
   await Promise.all(alerts.map(saveAlert))
+
+  const statuses = await getAlertStatuses()
+  for (const a of alerts) {
+    const stored = statuses[alertStatusKey(a)]
+    if (stored) a.status = stored
+  }
 
   return {
     summary: buildHealthSummary(healths),

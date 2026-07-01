@@ -1,7 +1,13 @@
-import type { Alert } from "@/lib/types"
+import type { Alert, AlertStatus } from "@/lib/types"
 import { ShieldAlert, AlertTriangle, Clock } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
+
+const STATUS_LABEL: Record<AlertStatus, string> = {
+  pendente: "Pendente",
+  em_ajuste: "Em ajuste",
+  resolvido: "Resolvido",
+}
 
 const cfg = {
   critical: {
@@ -28,10 +34,19 @@ const cfg = {
   },
 }
 
-export function AlertBanner({ alert }: { alert: Alert }) {
+export function AlertBanner({ alert, onStatusChange }: { alert: Alert; onStatusChange?: (status: AlertStatus) => void }) {
   const c = cfg[alert.severity]
   const Icon = c.Icon
   const elapsed = formatDistanceToNow(new Date(alert.detectedAt), { addSuffix: true, locale: ptBR })
+
+  const changeStatus = async (status: AlertStatus) => {
+    onStatusChange?.(status)
+    await fetch("/api/n8n/alerts/status", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workflowId: alert.workflowId, type: alert.type, status }),
+    })
+  }
 
   return (
     <div
@@ -56,10 +71,30 @@ export function AlertBanner({ alert }: { alert: Alert }) {
         <p className="text-xs mt-1 leading-relaxed" style={{ color: c.message }}>{alert.message}</p>
       </div>
 
-      <div className="flex items-center gap-1.5 text-[11px] font-medium whitespace-nowrap mt-0.5"
-        style={{ color: c.time }}>
-        <Clock size={10} />
-        {elapsed}
+      <div className="flex flex-col items-end gap-1.5 shrink-0 mt-0.5">
+        <div className="flex items-center gap-1.5 text-[11px] font-medium whitespace-nowrap"
+          style={{ color: c.time }}>
+          <Clock size={10} />
+          {elapsed}
+        </div>
+        <select
+          value={alert.status}
+          onChange={(e) => changeStatus(e.target.value as AlertStatus)}
+          onClick={(e) => e.stopPropagation()}
+          className="text-[11px] font-medium rounded-lg outline-none cursor-pointer"
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            color: c.title,
+            border: "none",
+            padding: "3px 6px",
+          }}
+        >
+          {Object.entries(STATUS_LABEL).map(([value, label]) => (
+            <option key={value} value={value} style={{ background: "#14141e", color: "#e8e8ec" }}>
+              {label}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   )

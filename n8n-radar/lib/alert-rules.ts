@@ -1,11 +1,12 @@
 import type { Alert, N8nExecution, WorkflowHealth } from "./types"
 
 let alertCounter = 0
-function makeAlert(partial: Omit<Alert, "id" | "detectedAt">): Alert {
+function makeAlert(partial: Omit<Alert, "id" | "detectedAt" | "status">): Alert {
   return {
     ...partial,
     id: `alert-${++alertCounter}-${Date.now()}`,
     detectedAt: new Date().toISOString(),
+    status: "pendente",
   }
 }
 

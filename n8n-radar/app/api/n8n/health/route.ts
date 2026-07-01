@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { n8nClient } from "@/lib/n8n-client"
 import { calculateHealthScore, buildHealthSummary, rankWorkflowsByRisk } from "@/lib/health-engine"
 import { runAllRules } from "@/lib/alert-rules"
-import { saveAlert } from "@/lib/alert-store"
+import { saveAlert, getAlertStatuses, alertStatusKey } from "@/lib/alert-store"
 
 export async function GET() {
   try {
@@ -26,6 +26,12 @@ export async function GET() {
 
     const alerts = runAllRules({ healths, executions, allExecutions })
     await Promise.all(alerts.map(saveAlert))
+
+    const statuses = await getAlertStatuses()
+    for (const a of alerts) {
+      const stored = statuses[alertStatusKey(a)]
+      if (stored) a.status = stored
+    }
 
     const criticalWorkflows = rankWorkflowsByRisk(healths).filter(
       (h) => h.level === "critical"

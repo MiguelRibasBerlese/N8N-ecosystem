@@ -61,6 +61,8 @@ export type AlertType =
 
 export type AlertSeverity = "warning" | "critical"
 
+export type AlertStatus = "pendente" | "em_ajuste" | "resolvido"
+
 export interface Alert {
   id: string
   workflowId: string
@@ -71,6 +73,7 @@ export interface Alert {
   detectedAt: string
   resolvedAt?: string
   autoResolved?: boolean
+  status: AlertStatus
 }
 
 export type DependencyConnectionType = "http_call" | "webhook" | "error_handler"

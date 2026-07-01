@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import type { Alert } from "@/lib/types"
+import type { Alert, AlertStatus } from "@/lib/types"
 import { AlertBanner } from "@/components/dashboard/alert-banner"
-import { Bell, Database, CheckCircle2, ShieldCheck, type LucideIcon } from "lucide-react"
+import { Bell, Database, CheckCircle2, Wrench, ShieldCheck, type LucideIcon } from "lucide-react"
 
 const ring  = (c: string) => `0 0 0 1px ${c}`
 const ringD = (c: string) => `0 0 0 1px ${c}, 0 2px 8px rgba(0,0,0,0.55)`
@@ -40,8 +40,13 @@ export default function AlertsPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  const active = alerts.filter((a) => !a.resolvedAt)
-  const resolved = alerts.filter((a) => a.resolvedAt)
+  const pendente = alerts.filter((a) => a.status === "pendente")
+  const emAjuste = alerts.filter((a) => a.status === "em_ajuste")
+  const resolved = alerts.filter((a) => a.status === "resolvido")
+
+  const setStatus = (id: string, status: AlertStatus) => {
+    setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)))
+  }
 
   return (
     <div className="min-h-full">
@@ -62,8 +67,9 @@ export default function AlertsPage() {
       <div className="px-4 md:px-7 py-6 space-y-7" style={{ maxWidth: 800 }}>
 
         {/* KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <KpiPill label="Ativos"     value={active.length}   color="#f87171" tint="rgba(239,68,68,0.12)"  Icon={Bell}        />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <KpiPill label="Pendentes"  value={pendente.length} color="#f87171" tint="rgba(239,68,68,0.12)"  Icon={Bell}        />
+          <KpiPill label="Em ajuste"  value={emAjuste.length} color="#fbbf24" tint="rgba(245,158,11,0.12)" Icon={Wrench}      />
           <KpiPill label="Resolvidos" value={resolved.length} color="#4ade80" tint="rgba(34,197,94,0.12)"  Icon={CheckCircle2} />
           <KpiPill label="Total"      value={alerts.length}   color="#a1a1aa" tint="rgba(255,255,255,0.05)" Icon={Database}    />
         </div>
@@ -105,14 +111,25 @@ export default function AlertsPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {active.length > 0 && (
+            {pendente.length > 0 && (
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-widest mb-3"
                   style={{ color: "#f87171" }}>
-                  Ativos · {active.length}
+                  Pendentes · {pendente.length}
                 </p>
                 <div className="space-y-2">
-                  {active.map((a) => <AlertBanner key={a.id} alert={a} />)}
+                  {pendente.map((a) => <AlertBanner key={a.id} alert={a} onStatusChange={(s) => setStatus(a.id, s)} />)}
+                </div>
+              </div>
+            )}
+            {emAjuste.length > 0 && (
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-widest mb-3"
+                  style={{ color: "#fbbf24" }}>
+                  Em ajuste · {emAjuste.length}
+                </p>
+                <div className="space-y-2">
+                  {emAjuste.map((a) => <AlertBanner key={a.id} alert={a} onStatusChange={(s) => setStatus(a.id, s)} />)}
                 </div>
               </div>
             )}
@@ -123,7 +140,7 @@ export default function AlertsPage() {
                   Resolvidos · {resolved.length}
                 </p>
                 <div className="space-y-2" style={{ opacity: 0.45 }}>
-                  {resolved.map((a) => <AlertBanner key={a.id} alert={a} />)}
+                  {resolved.map((a) => <AlertBanner key={a.id} alert={a} onStatusChange={(s) => setStatus(a.id, s)} />)}
                 </div>
               </div>
             )}

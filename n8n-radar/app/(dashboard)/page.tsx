@@ -62,7 +62,7 @@ export default function OverviewPage() {
   const { healths, loading, refetch } = useWorkflows()
   const [search, setSearch] = useState("")
 
-  const activeAlerts = alerts.filter((a) => !a.resolvedAt)
+  const activeAlerts = alerts.filter((a) => a.status !== "resolvido")
 
   const filtered = healths.filter((h) =>
     h.workflowName.toLowerCase().includes(search.toLowerCase())

@@ -65,7 +65,7 @@ function N8nStatus() {
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const path = usePathname()
   const { alerts, connected, summary } = useSSE()
-  const activeAlerts = alerts.filter((a) => !a.resolvedAt).length
+  const activeAlerts = alerts.filter((a) => a.status !== "resolvido").length
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const healthColor = summary?.critical ? "#ef4444" : summary?.warning ? "#f59e0b" : "#22c55e"

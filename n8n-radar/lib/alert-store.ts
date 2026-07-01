@@ -1,4 +1,4 @@
-import type { Alert } from "./types"
+import type { Alert, AlertStatus } from "./types"
 
 const supabase =
   process.env.SUPABASE_URL
@@ -67,6 +67,28 @@ export function isUsingSupabase(): boolean {
   return supabase !== null
 }
 
+// Alertas são recalculados a cada poll (sem id estável), então o status
+// manual (pendente/em_ajuste/resolvido) é guardado por workflowId+type.
+export const alertStatusKey = (a: Pick<Alert, "workflowId" | "type">) => `${a.workflowId}:${a.type}`
+
+const inMemoryStatus = new Map<string, AlertStatus>()
+
+export async function getAlertStatuses(): Promise<Record<string, AlertStatus>> {
+  if (supabase) {
+    const { data } = await supabase.from("n8n_alert_status").select("key, status")
+    return Object.fromEntries((data ?? []).map((r: { key: string; status: AlertStatus }) => [r.key, r.status]))
+  }
+  return Object.fromEntries(inMemoryStatus)
+}
+
+export async function setAlertStatus(key: string, status: AlertStatus): Promise<void> {
+  if (supabase) {
+    await supabase.from("n8n_alert_status").upsert({ key, status, updated_at: new Date().toISOString() })
+  } else {
+    inMemoryStatus.set(key, status)
+  }
+}
+
 function dbRowToAlert(row: Record<string, unknown>): Alert {
   return {
     id: String(row.id),
@@ -78,5 +100,6 @@ function dbRowToAlert(row: Record<string, unknown>): Alert {
     detectedAt: String(row.detected_at),
     resolvedAt: row.resolved_at ? String(row.resolved_at) : undefined,
     autoResolved: Boolean(row.auto_resolved),
+    status: "pendente",
   }
 }
